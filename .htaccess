@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteCond "%{REQUEST_URI}" "/files/" [NC]
+RewriteRule "^files/(.*)" "download_logging/download.php?file=$1" [L]
