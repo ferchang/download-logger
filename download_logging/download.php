@@ -1,4 +1,6 @@
 <?php
+if(ini_get('register_globals')) exit("<center><h3>Error: Turn that damned register globals off!</h3></center>");
+define('CAN_INCLUDE', true);
 
 //--------- config ----------->
 
@@ -18,14 +20,16 @@ ini_set('display_errors', '0');
 
 ignore_user_abort(true);
 
+define('ROOT', str_replace('\\', '/', __DIR__).'/');
+
 $t1=time();
 
 $path_parts=pathinfo($_GET['file']);
 $file_name=$path_parts['basename'];
 $file='../files/'.$file_name;
-if(!file_exists($file)) require 'include/404.php';
+if(!file_exists($file)) require ROOT.'include/404.php';
 $size=filesize($file);
-if($_SERVER['REQUEST_METHOD']==='HEAD') require 'include/http_head.php';
+if($_SERVER['REQUEST_METHOD']==='HEAD') require ROOT.'include/http_head.php';
 
 header('X-download-logger: true');
 header('Content-Type: application/octet-stream');

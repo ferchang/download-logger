@@ -1,4 +1,6 @@
 <?php
+if(ini_get('register_globals')) exit("<center><h3>Error: Turn that damned register globals off!</h3></center>");
+if(!defined('CAN_INCLUDE')) exit("<center><h3>Error: Direct access denied!</h3></center>");
 
 header('X-download-logger: true');
 header('Content-Type: application/octet-stream');
@@ -19,7 +21,7 @@ else if($size2>1000) {
 else $size_unit='Bytes';
 $size2=round($size2, 2);
 
-//touch('fff');
+touch('fff');
 
 $report="time: $t1";
 $report.="\nmethod: {$_SERVER['REQUEST_METHOD']}";
