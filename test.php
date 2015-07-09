@@ -8,8 +8,8 @@ set_time_limit(60*2);
 header('Content-Type: text/html');
 
 $host='';
-$file='cryptopp522mingw-bin-nodebug.zip';
-$method='GET';
+$file='2.zip';
+$method='HEAD';
 $bytes=0;
 
 if(!$method) $method='GET';

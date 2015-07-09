@@ -23,8 +23,9 @@ $t1=time();
 $path_parts=pathinfo($_GET['file']);
 $file_name=$path_parts['basename'];
 $file='../files/'.$file_name;
-if(!file_exists($file)) exit('404');
+if(!file_exists($file)) require 'include/404.php';
 $size=filesize($file);
+if($_SERVER['REQUEST_METHOD']==='HEAD') require 'include/http_head.php';
 
 header('X-download-logger: true');
 header('Content-Type: application/octet-stream');
@@ -104,7 +105,7 @@ else if($size2>1000) {
 else $size_unit='Bytes';
 $size2=round($size2, 2);
 
-$report="time: ".time();
+$report="time: $t1";
 $report.="\nmethod: {$_SERVER['REQUEST_METHOD']}";
 $report.="\nfile: $file_name";
 $report.="\nsize: $size2 $size_unit";

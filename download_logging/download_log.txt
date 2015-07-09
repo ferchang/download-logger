@@ -1,0 +1,13 @@
+time: 1436462305
+method: HEAD
+file: 404.zip (404 Not Found)
+ip: 127.0.0.1
+user agent: my bot!
+
+time: 1436462432
+method: HEAD
+file: 2.zip
+size: 12.04 MB
+ip: 127.0.0.1
+user agent: my bot!
+
