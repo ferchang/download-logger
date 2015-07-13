@@ -21,7 +21,7 @@ else if($size2>1000) {
 else $size_unit='Bytes';
 $size2=round($size2, 2);
 
-touch('fff');
+//touch('fff');
 
 $report="time: $t1";
 $report.="\nmethod: {$_SERVER['REQUEST_METHOD']}";

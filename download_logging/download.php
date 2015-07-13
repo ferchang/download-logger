@@ -10,7 +10,7 @@ ini_set('error_log', 'error_log.txt');
 
 $min_duration=5;
 
-$chunk_size=1024;
+$chunk_size=500;
 
 set_time_limit(60*30);
 
@@ -31,6 +31,8 @@ if(!file_exists($file)) require ROOT.'include/404.php';
 $size=filesize($file);
 if($_SERVER['REQUEST_METHOD']==='HEAD') require ROOT.'include/http_head.php';
 
+require ROOT.'include/func_my_flush.php';
+
 header('X-download-logger: true');
 header('Content-Type: application/octet-stream');
 header("Content-Disposition: attachment; filename=\"$file_name\"");
@@ -38,8 +40,9 @@ header("Pragma: public");
 header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 header("Content-Length: $size");
 
-ob_flush();
-flush();
+//header('Content-Type: text/plain');
+
+my_flush();
 
 $fp=fopen($file, 'rb');
 
@@ -50,27 +53,35 @@ while(!feof($fp)) {
 	if(feof($fp)) {
 		$duration=time()-$t1;
 		$delta=$min_duration-$duration;
-		if($delta<0) $delta=0;
-		$tmp=substr($out, 0, strlen($out)-$delta);
-		echo $tmp;
-		ob_flush();
-		flush();
-		if(connection_aborted()) break;
-		$output_bytes+=strlen($tmp);
-		$duration=time()-$t1;
-		for($i=0; $i<$delta; $i++) {
-			sleep(1);
-			echo substr($out, $i-$delta, 1);
-			ob_flush();
-			flush();
+		if($delta<=0) {
+			echo $out;
+			my_flush();
+			if(connection_aborted()) break;
+			$duration=time()-$t1;
+			$output_bytes+=strlen($out);
+			break;
+		}
+		if(strlen($out)>$delta) {
+			$tmp=substr($out, 0, strlen($out)-$delta);
+			echo $tmp;
+			my_flush();
+			if(connection_aborted()) break;
+			$output_bytes+=strlen($tmp);
+			$duration=time()-$t1;
+			$out=substr($out, strlen($tmp));
+		}
+		$delay=($delta/strlen($out))*1000*1000;
+		for($i=0; $i<strlen($out); $i++) {
+			usleep($delay);
+			echo substr($out, $i, 1);
+			my_flush();
 			if(connection_aborted()) break;
 			$output_bytes++;
 		}
 	}
 	else {
 		echo $out;
-		ob_flush();
-		flush();
+		my_flush();
 		if(connection_aborted()) break;
 		$output_bytes+=strlen($out);
 	}
