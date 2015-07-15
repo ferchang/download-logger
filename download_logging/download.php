@@ -27,9 +27,9 @@ $t1=time();
 $path_parts=pathinfo($_GET['file']);
 $file_name=$path_parts['basename'];
 $file='../files/'.$file_name;
-if(!file_exists($file)) require ROOT.'include/404.php';
+if(!file_exists($file)) require ROOT.'include/code_404.php';
 $size=filesize($file);
-if($_SERVER['REQUEST_METHOD']==='HEAD') require ROOT.'include/http_head.php';
+if($_SERVER['REQUEST_METHOD']==='HEAD') require ROOT.'include/code_http_head.php';
 
 require ROOT.'include/func_send2browser.php';
 

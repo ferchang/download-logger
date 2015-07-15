@@ -9,15 +9,16 @@ header('Content-Type: text/html');
 
 $host='';
 $file='flash_matrix.zip';
-$method='GET';
+$method='HEAD';
 $bytes=0;
 
 if(!$method) $method='GET';
 if(!$host) $host='localhost';
 
-echo '<pre>';
-echo "host: $host\nfile: $file\nmethod: $method\nbytes to get: $bytes\n";
 for($i=0; $i<500; $i++) echo '<!-- -->';
+
+echo "host: $host<br>file: $file<br>method: $method<br>bytes to get: $bytes<br>";
+
 ob_flush();
 flush();
 
@@ -46,7 +47,7 @@ while ($out = socket_read($socket, 1000)) {
 	//usleep(20000);
 	$len=strlen($out);
 	fwrite($fp, $out);
-    echo "$len-";
+    echo "$len - ";
 	ob_flush();
 	flush();
 	if($bytes) {
