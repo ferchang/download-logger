@@ -8,7 +8,7 @@ set_time_limit(60*2);
 header('Content-Type: text/html');
 
 $host='';
-$file='test.txt';
+$file='flash_matrix.zip';
 $method='GET';
 $bytes=0;
 

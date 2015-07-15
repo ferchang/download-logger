@@ -31,7 +31,7 @@ if(!file_exists($file)) require ROOT.'include/404.php';
 $size=filesize($file);
 if($_SERVER['REQUEST_METHOD']==='HEAD') require ROOT.'include/http_head.php';
 
-require ROOT.'include/func_my_flush.php';
+require ROOT.'include/func_send2browser.php';
 
 header('X-download-logger: true');
 header('Content-Type: application/octet-stream');
@@ -39,10 +39,6 @@ header("Content-Disposition: attachment; filename=\"$file_name\"");
 header("Pragma: public");
 header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 header("Content-Length: $size");
-
-//header('Content-Type: text/plain');
-
-my_flush();
 
 $fp=fopen($file, 'rb');
 
@@ -54,8 +50,7 @@ while(!feof($fp)) {
 		$duration=time()-$t1;
 		$delta=$min_duration-$duration;
 		if($delta<=0) {
-			echo $out;
-			my_flush();
+			send2browser($out);
 			if(connection_aborted()) break;
 			$duration=time()-$t1;
 			$output_bytes+=strlen($out);
@@ -63,8 +58,7 @@ while(!feof($fp)) {
 		}
 		if(strlen($out)>$delta) {
 			$tmp=substr($out, 0, strlen($out)-$delta);
-			echo $tmp;
-			my_flush();
+			send2browser($tmp);
 			if(connection_aborted()) break;
 			$output_bytes+=strlen($tmp);
 			$duration=time()-$t1;
@@ -73,15 +67,13 @@ while(!feof($fp)) {
 		$delay=($delta/strlen($out))*1000*1000;
 		for($i=0; $i<strlen($out); $i++) {
 			usleep($delay);
-			echo substr($out, $i, 1);
-			my_flush();
+			send2browser(substr($out, $i, 1));
 			if(connection_aborted()) break;
 			$output_bytes++;
 		}
 	}
 	else {
-		echo $out;
-		my_flush();
+		send2browser($out);
 		if(connection_aborted()) break;
 		$output_bytes+=strlen($out);
 	}
