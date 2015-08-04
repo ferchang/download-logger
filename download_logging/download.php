@@ -8,7 +8,7 @@ error_reporting(E_ALL);
 ini_set('log_errors', 1);
 ini_set('error_log', 'error_log.txt');
 
-$min_duration=5;
+$min_duration=0;
 
 $chunk_size=500;
 
@@ -31,6 +31,8 @@ if(!file_exists($file)) require ROOT.'include/code_404.php';
 $size=filesize($file);
 if($_SERVER['REQUEST_METHOD']==='HEAD') require ROOT.'include/code_http_head.php';
 
+$file_out='';
+
 require ROOT.'include/func_send2browser.php';
 
 header('X-download-logger: true');
@@ -39,6 +41,7 @@ header("Content-Disposition: attachment; filename=\"$file_name\"");
 header("Pragma: public");
 header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 header("Content-Length: $size");
+header("Connection: Close");
 
 $fp=fopen($file, 'rb');
 
@@ -97,6 +100,7 @@ else {
 		$speed/=1000;
 		$speed_unit='Kbps';
 	}
+	else $speed_unit='bps';
 	$speed=round($speed, 2);
 }
 
@@ -129,5 +133,11 @@ $fp=fopen('download_log.txt', 'a');
 flock($fp, LOCK_EX);
 fwrite($fp, $report);
 fclose($fp);
+
+//$file_out[3]='x';
+
+if(!connection_aborted()) {
+	if(hash('sha256', file_get_contents($file))!==hash('sha256', $file_out)) trigger_error("$file_name hash not ok!", E_USER_WARNING);
+}
 
 ?>
