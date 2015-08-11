@@ -5,17 +5,9 @@ if(!defined('CAN_INCLUDE')) exit("<center><h3>Error: Direct access denied!</h3><
 header('HTTP/1.1 404 Not Found');
 echo "<h1>404 Not Found</h1>";
 
-$report="time: ".time();
-$report.="\nmethod: {$_SERVER['REQUEST_METHOD']}";
-$report.="\nfile: $file_name (404 Not Found)";
-$report.="\nip: {$_SERVER['REMOTE_ADDR']}";
-$report.="\nuser agent: {$_SERVER['HTTP_USER_AGENT']}";
-$report.="\n\n";
+require ROOT.'include/code_log_common.php';
 
-$fp=fopen('download_log.txt', 'a');
-flock($fp, LOCK_EX);
-fwrite($fp, $report);
-fclose($fp);
+require ROOT.'include/code_write2log.php';
 
 exit;
 

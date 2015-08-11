@@ -27,8 +27,11 @@ $t1=time();
 $path_parts=pathinfo($_GET['file']);
 $file_name=$path_parts['basename'];
 $file='../files/'.$file_name;
+
 if(!file_exists($file)) require ROOT.'include/code_404.php';
+
 $size=filesize($file);
+
 if($_SERVER['REQUEST_METHOD']==='HEAD') require ROOT.'include/code_http_head.php';
 
 $file_out='';
@@ -116,25 +119,17 @@ else if($size2>1000) {
 else $size_unit='Bytes';
 $size2=round($size2, 2);
 
-$report="time: $t1";
-$report.="\nmethod: {$_SERVER['REQUEST_METHOD']}";
-$report.="\nfile: $file_name";
+require ROOT.'include/code_log_common.php';
+
 $report.="\nsize: $size2 $size_unit";
 $report.="\nduration: $duration";
 $report.="\ntotal duration: $total_duration";
 $report.="\nspeed: $speed $speed_unit";
-$report.="\nip: {$_SERVER['REMOTE_ADDR']}";
-$report.="\nuser agent: {$_SERVER['HTTP_USER_AGENT']}";
 $report.="\noutput_bytes: $output_bytes";
+
 if(connection_aborted()) $report.="\naborted at ".round(($output_bytes/$size)*100, 2)."% ($output_bytes/$size)";
-$report.="\n\n";
 
-$fp=fopen('download_log.txt', 'a');
-flock($fp, LOCK_EX);
-fwrite($fp, $report);
-fclose($fp);
-
-//$file_out[3]='x';
+require ROOT.'include/code_write2log.php';
 
 if(!connection_aborted()) {
 	if(hash('sha256', file_get_contents($file))!==hash('sha256', $file_out)) trigger_error("$file_name hash not ok!", E_USER_WARNING);
