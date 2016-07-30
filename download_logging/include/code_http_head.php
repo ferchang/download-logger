@@ -25,7 +25,7 @@ $size2=round($size2, 2);
 
 $report="time: $t1";
 $report.="\nmethod: {$_SERVER['REQUEST_METHOD']}";
-$report.="\nfile: $file_name";
+$report.="\nfile: $file_name_with_path";
 $report.="\nsize: $size2 $size_unit";
 $report.="\nip: {$_SERVER['REMOTE_ADDR']}";
 $report.="\nuser agent: {$_SERVER['HTTP_USER_AGENT']}";

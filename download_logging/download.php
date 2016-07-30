@@ -24,11 +24,17 @@ define('ROOT', str_replace('\\', '/', __DIR__).'/');
 
 $t1=time();
 
+$file_name_with_path=$_GET['file'];
+$file='../files/'.$file_name_with_path;
+
 $path_parts=pathinfo($_GET['file']);
 $file_name=$path_parts['basename'];
-$file='../files/'.$file_name;
+
+//file_put_contents('out.txt', "file_name_with_path: $file_name_with_path\nfile: $file\nfile_name: $file_name\n");
 
 if(!file_exists($file)) require ROOT.'include/code_404.php';
+
+if(is_dir($file)) require ROOT.'include/code_dir.php';
 
 $size=filesize($file);
 
@@ -50,7 +56,7 @@ $fp=fopen($file, 'rb');
 
 $output_bytes=0;
 
-while(!feof($fp)) {
+if($fp) while(!feof($fp)) {
 	$out=fread($fp, $chunk_size);
 	if(feof($fp)) {
 		$duration=time()-$t1;
@@ -132,7 +138,7 @@ if(connection_aborted()) $report.="\naborted at ".round(($output_bytes/$size)*10
 require ROOT.'include/code_write2log.php';
 
 if(!connection_aborted()) {
-	if(hash('sha256', file_get_contents($file))!==hash('sha256', $file_out)) trigger_error("$file_name hash not ok!", E_USER_WARNING);
+	if(hash('sha256', file_get_contents($file))!==hash('sha256', $file_out)) trigger_error("$file_name_with_path hash not ok!", E_USER_WARNING);
 }
 
 ?>
