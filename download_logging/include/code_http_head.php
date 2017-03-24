@@ -28,7 +28,9 @@ $report.="\nmethod: {$_SERVER['REQUEST_METHOD']}";
 $report.="\nfile: $file_name_with_path";
 $report.="\nsize: $size2 $size_unit";
 $report.="\nip: {$_SERVER['REMOTE_ADDR']}";
-$report.="\nuser agent: {$_SERVER['HTTP_USER_AGENT']}";
+$report.="\nuser agent: ";
+if(isset($_SERVER['HTTP_USER_AGENT'])) $report.=$_SERVER['HTTP_USER_AGENT'];
+else $report.="NA";
 $report.="\n\n";
 
 $fp=fopen('download_log.txt', 'a');
